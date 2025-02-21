@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Управление услугами"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Поиск услуг по названию -->
+    <EditText
+        android:id="@+id/searchServiceField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Поиск по названию"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Фильтрация по категориям -->
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Список услуг -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/servicesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <!-- Поля для ввода данных об услуге -->
+    <EditText
+        android:id="@+id/serviceIdField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID услуги (для удаления/изменения)"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/serviceNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Название услуги"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/serviceCategoryField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Категория услуги"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/serviceDescriptionField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Описание услуги"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Кнопки управления услугами -->
+    <Button
+        android:id="@+id/addServiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить услугу"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/updateServiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Изменить услугу"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/deleteServiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Удалить услугу"/>
+
+</LinearLayout>
