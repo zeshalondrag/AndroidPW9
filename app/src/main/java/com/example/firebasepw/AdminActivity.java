@@ -27,11 +27,14 @@ public class AdminActivity extends EmployeeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        // Инициализация Firestore и Auth
         firestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
+        // Проверка подключения к Firestore
         Toast.makeText(this, "Firestore initialized: " + (firestore != null), Toast.LENGTH_SHORT).show();
 
+        // Привязка элементов интерфейса для услуг (доступны через protected из EmployeeActivity)
         serviceIdField = findViewById(R.id.serviceIdField);
         serviceNameField = findViewById(R.id.serviceNameField);
         serviceCategoryField = findViewById(R.id.serviceCategoryField);
@@ -40,6 +43,7 @@ public class AdminActivity extends EmployeeActivity {
         updateServiceButton = findViewById(R.id.updateServiceButton);
         deleteServiceButton = findViewById(R.id.deleteServiceButton);
 
+        // Привязка элементов интерфейса для пользователей
         userIdField = findViewById(R.id.userIdField);
         userEmailField = findViewById(R.id.userEmailField);
         userRoleField = findViewById(R.id.userRoleField);
@@ -47,15 +51,17 @@ public class AdminActivity extends EmployeeActivity {
         updateUserButton = findViewById(R.id.updateUserButton);
         deleteUserButton = findViewById(R.id.deleteUserButton);
 
+        // Логика для услуг (унаследована из EmployeeActivity, но переопределена для логирования)
         addServiceButton.setOnClickListener(v -> addService());
         updateServiceButton.setOnClickListener(v -> updateService());
         deleteServiceButton.setOnClickListener(v -> deleteService());
 
+        // Добавление нового пользователя
         addUserButton.setOnClickListener(v -> {
             String email = userEmailField.getText().toString().trim();
             String role = userRoleField.getText().toString().trim();
 
-            if (!email.isEmpty() && !role.isEmpty() && (role.equals("admin") || role.equals("employee"))) {
+            if (!email.isEmpty() && !role.isEmpty() && (role.equals("admin") || role.equals("employee") || role.equals("user"))) {
                 String userId = firestore.collection("users").document().getId();
                 DocumentReference userRef = firestore.collection("users").document(userId);
                 Map<String, Object> userData = new HashMap<>();
@@ -70,16 +76,17 @@ public class AdminActivity extends EmployeeActivity {
                         })
                         .addOnFailureListener(e -> Toast.makeText(this, "Ошибка добавления пользователя: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             } else {
-                Toast.makeText(this, "Заполните email и корректную роль (admin/employee)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Заполните email и корректную роль (admin/employee/user)", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // Изменение информации о пользователе
         updateUserButton.setOnClickListener(v -> {
             String userId = userIdField.getText().toString().trim();
             String email = userEmailField.getText().toString().trim();
             String role = userRoleField.getText().toString().trim();
 
-            if (!userId.isEmpty() && !email.isEmpty() && !role.isEmpty() && (role.equals("admin") || role.equals("employee"))) {
+            if (!userId.isEmpty() && !email.isEmpty() && !role.isEmpty() && (role.equals("admin") || role.equals("employee") || role.equals("user"))) {
                 DocumentReference userRef = firestore.collection("users").document(userId);
                 Map<String, Object> userData = new HashMap<>();
                 userData.put("email", email);
@@ -97,6 +104,7 @@ public class AdminActivity extends EmployeeActivity {
             }
         });
 
+        // Удаление пользователя
         deleteUserButton.setOnClickListener(v -> {
             String userId = userIdField.getText().toString().trim();
             if (!userId.isEmpty()) {
@@ -112,9 +120,11 @@ public class AdminActivity extends EmployeeActivity {
             }
         });
 
+        // Загрузка услуг при запуске (унаследована из EmployeeActivity)
         loadServices();
     }
 
+    // Логирование действий администратора
     private void logAction(String action, String targetId, String serviceId) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -123,8 +133,8 @@ public class AdminActivity extends EmployeeActivity {
             Map<String, Object> logData = new HashMap<>();
             logData.put("action", action);
             logData.put("userId", user.getUid());
-            logData.put("targetId", targetId);
-            logData.put("serviceId", serviceId);
+            logData.put("targetId", targetId); // ID пользователя или услуги
+            logData.put("serviceId", serviceId); // ID услуги (если применимо)
             logData.put("timestamp", System.currentTimeMillis());
 
             logRef.set(logData)
@@ -135,6 +145,7 @@ public class AdminActivity extends EmployeeActivity {
         }
     }
 
+    // Переопределение методов управления услугами с логированием
     @Override
     protected void addService() {
         String name = serviceNameField.getText().toString().trim();

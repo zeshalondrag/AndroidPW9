@@ -26,9 +26,11 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
+        // Инициализация Firebase
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
+        // Проверка подключения к Firestore
         Toast.makeText(this, "Firestore initialized: " + (firestore != null), Toast.LENGTH_SHORT).show();
 
         emailField = findViewById(R.id.emailField);
@@ -62,7 +64,7 @@ public class AuthActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(AuthActivity.this, "Вход успешен", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AuthActivity.this, "Вход успешен, UID: " + (user != null ? user.getUid() : "null"), Toast.LENGTH_SHORT).show();
                         checkUserRole(user);
                     } else {
                         Toast.makeText(AuthActivity.this, "Ошибка входа: " + task.getException().getMessage(),
@@ -81,10 +83,10 @@ public class AuthActivity extends AppCompatActivity {
                             DocumentReference userRef = firestore.collection("users").document(uid);
                             Map<String, Object> userData = new HashMap<>();
                             userData.put("email", email);
-                            userData.put("role", "employee");
+                            userData.put("role", "user"); // Роль по умолчанию "user"
                             userRef.set(userData)
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(AuthActivity.this, "Регистрация успешна, роль: employee", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AuthActivity.this, "Регистрация успешна, роль: user", Toast.LENGTH_SHORT).show();
                                         checkUserRole(user);
                                     })
                                     .addOnFailureListener(e -> {
@@ -111,14 +113,21 @@ public class AuthActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         String role = documentSnapshot.getString("role");
                         Toast.makeText(AuthActivity.this, "Найдена роль: " + (role != null ? role : "null"), Toast.LENGTH_SHORT).show();
-                        if ("admin".equals(role)) {
-                            startActivity(new Intent(AuthActivity.this, AdminActivity.class));
-                            finish();
-                        } else if ("employee".equals(role)) {
-                            startActivity(new Intent(AuthActivity.this, EmployeeActivity.class));
-                            finish();
-                        } else {
-                            Toast.makeText(AuthActivity.this, "Неизвестная роль пользователя", Toast.LENGTH_SHORT).show();
+                        try {
+                            if ("admin".equals(role)) {
+                                startActivity(new Intent(AuthActivity.this, AdminActivity.class));
+                                finish();
+                            } else if ("employee".equals(role)) {
+                                startActivity(new Intent(AuthActivity.this, EmployeeActivity.class));
+                                finish();
+                            } else if ("user".equals(role)) {
+                                startActivity(new Intent(AuthActivity.this, UserActivity.class)); // Предполагаем, что есть UserActivity
+                                finish();
+                            } else {
+                                Toast.makeText(AuthActivity.this, "Неизвестная роль пользователя", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            Toast.makeText(AuthActivity.this, "Ошибка при переходе: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(AuthActivity.this, "Данные пользователя не найдены в Firestore", Toast.LENGTH_SHORT).show();

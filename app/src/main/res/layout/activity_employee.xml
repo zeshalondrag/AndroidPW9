@@ -12,7 +12,6 @@
         android:textSize="24sp"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Поиск услуг по названию -->
     <EditText
         android:id="@+id/searchServiceField"
         android:layout_width="match_parent"
@@ -20,21 +19,18 @@
         android:hint="Поиск по названию"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Фильтрация по категориям -->
     <Spinner
         android:id="@+id/categorySpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Список услуг -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/servicesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <!-- Поля для ввода данных об услуге -->
     <EditText
         android:id="@+id/serviceIdField"
         android:layout_width="match_parent"
@@ -63,7 +59,6 @@
         android:hint="Описание услуги"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Кнопки управления услугами -->
     <Button
         android:id="@+id/addServiceButton"
         android:layout_width="match_parent"

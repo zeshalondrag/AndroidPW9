@@ -29,6 +29,9 @@
         <activity
             android:name=".EmployeeActivity"
             android:exported="false" />
+        <activity
+            android:name=".UserActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
